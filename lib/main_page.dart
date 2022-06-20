@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'detail_page.dart';
-import 'home.dart';
 import 'login_page.dart';
 import 'main.dart';
 
@@ -26,67 +25,64 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return SizedBox(
-      height: height,
-      child: Scaffold(
-        body: SizedBox(
-          height: height,
-          child: Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                SizedBox(
-                  height: height * 0.8,
-                  child: StreamBuilder<QuerySnapshot>(
-                      stream: firestore
+    return Scaffold(
+      body: SizedBox(
+        height: height,
+        child: Expanded(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              SizedBox(
+                height: height * 0.8,
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: firestore
+                        .collection('ayakkabi')
+                        // .where('isAdmin', isEqualTo: true)
+                        .orderBy('time', descending: true)
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Text("Ayakkabı yok.");
+                      }
+                      return ListView(
+                        children: getExpenseItems(snapshot),
+                      );
+                    }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  OutlinedButton(
+                    onPressed: () {
+                      auth.signOut();
+                      isLoginLoading = false;
+                      isCreateLoading = false;
+                    },
+                    child: const Text('Çıkış Yap'),
+                  ),
+                  const SizedBox(width: 20),
+                  OutlinedButton(
+                    onPressed: () async {
+                      firestore
+                          .collection('users')
+                          .doc(widget.user!.uid)
+                          .delete();
+                      firestore
+                          .collection('users')
+                          .doc(widget.user!.uid)
                           .collection('ayakkabi')
-                          // .where('isAdmin', isEqualTo: true)
-                          .orderBy('time', descending: true)
-                          .snapshots(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Text("Ayakkabı yok.");
-                        }
-                        return ListView(
-                          children: getExpenseItems(snapshot),
-                        );
-                      }),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    OutlinedButton(
-                      onPressed: () {
-                        auth.signOut();
-                        isLoginLoading = false;
-                        isCreateLoading = false;
-                      },
-                      child: const Text('Çıkış Yap'),
-                    ),
-                    const SizedBox(width: 20),
-                    OutlinedButton(
-                      onPressed: () async {
-                        firestore
-                            .collection('users')
-                            .doc(widget.user!.uid)
-                            .delete();
-                        firestore
-                            .collection('users')
-                            .doc(widget.user!.uid)
-                            .collection('ayakkabi')
-                            .doc()
-                            .delete();
-                        auth.currentUser?.delete();
-                        isLoginLoading = false;
-                        isCreateLoading = false;
-                      },
-                      child: const Text('Hesabı Sil'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                          .doc()
+                          .delete();
+                      auth.currentUser?.delete();
+                      isLoginLoading = false;
+                      isCreateLoading = false;
+                    },
+                    child: const Text('Hesabı Sil'),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

@@ -87,22 +87,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
           const SizedBox(height: 20),
           Row(
-            children: [
-              const Spacer(),
-              const Text('Admin misiniz?'),
-              const SizedBox(width: 20),
-              CupertinoSwitch(
-                  value: value,
-                  onChanged: (x) {
-                    setState(() {
-                      value = x;
-                    });
-                  }),
-              SizedBox(width: width * 0.05),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               isCreateLoading
