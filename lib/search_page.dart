@@ -103,17 +103,6 @@ class _SearchPageState extends State<SearchPage> {
                       },
                     )
                   : Container(),
-              // FutureBuilder(
-              //   future: firestore
-              //       .collection('users')
-              //       .where('meyve-sebze-adi', isEqualTo: 'asdasd')
-              //       .get(),
-              //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-              //     return Card(
-              //       child: Text('${snapshot.data()['kilo-fiyati']}'),
-              //     );
-              //   },
-              // ),
             ],
           ),
         ),
